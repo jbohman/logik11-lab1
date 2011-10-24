@@ -1,0 +1,8 @@
+[a, b].
+and(a,b).
+[
+    [1, a, premise],
+    [2, b, premise],
+    [3, and(a, b), andint(1, 2)]
+].
+

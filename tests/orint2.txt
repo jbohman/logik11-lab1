@@ -1,0 +1,7 @@
+[a].
+or(b,a).
+[
+    [1, a, premise],
+    [2, or(b, a), orint2(1)]
+].
+
