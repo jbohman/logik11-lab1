@@ -73,19 +73,29 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     valid(Prems, Rest, Frp).
 
 
-% orint1(x) TODO
-%valid(Prems, [[X,Y,Z]|Rest], Frp):-
-    %number(X),
-    %prop(Y),
-    %write('orint1(x)'),
-    %valid(Prems, Rest, Frp).
+% orint1(x)
+valid(Prems, [[X,Y,Z]|Rest], Frp):-
+    number(X),
+    prop(Y),
+    Z = orint1(A),
+    Y = or(B,C), % expand Y to or(B,C)
+    member([A, B, _], Frp), % do B exist
+    prop(B), % is B a prop
+    prop(C), % is C a prop
+    write('orint1(x)'),
+    valid(Prems, Rest, Frp).
 
-% orint2(x) TODO
-%valid(Prems, [[X,Y,Z]|Rest], Frp):-
-    %number(X),
-    %prop(Y),
-    %write('orint2(x)'),
-    %valid(Prems, Rest, Frp).
+% orint2(x)
+valid(Prems, [[X,Y,Z]|Rest], Frp):-
+    number(X),
+    prop(Y),
+    Z = orint2(A),
+    Y = or(B,C), % expand Y to or(B,C)
+    member([A, C, _], Frp), % do C exist
+    prop(B), % is B a prop
+    prop(C), % is C a prop
+    write('orint2(x)'),
+    valid(Prems, Rest, Frp).
 
 % orel(x,y,u,v,w)
 valid(Prems, [[X,Y,Z]|Rest], Frp):-
