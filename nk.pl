@@ -15,9 +15,12 @@ valid_rev(Prems, Goal, RevProof):-
 
 valid(_,[],_).
 
+% assumption
 valid(Prems, [[_,_,assumption]|[]], Frp):-
     write('assumption checked').
 
+
+% premise
 valid(Prems, [[X,Y,premise]|Rest], Frp):-
     number(X),
     prop(Y),
@@ -25,6 +28,8 @@ valid(Prems, [[X,Y,premise]|Rest], Frp):-
     write('premise checked'),
     valid(Prems, Rest, Frp).
 
+
+% copy(x)
 valid(Prems, [[X,Y,Z]|Rest], Frp):-
     number(X),
     prop(Y),
@@ -33,34 +38,52 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     write('copy checked'),
     valid(Prems, Rest, Frp).
 
+
+% andint(x,y) TODO
 valid(Prems, [[X,Y,Z]|Rest], Frp):-
     number(X),
     prop(Y),
-    Z = impel(A,B),
-    member([B, imp(F,Y), _], Frp),
-    member([A, F, _], Frp),
-    write('impel checked'),
+    write('andint(x,y)'),
     valid(Prems, Rest, Frp).
 
+% andel1(x)
 valid(Prems, [[X,Y,Z]|Rest], Frp):-
     number(X),
     prop(Y),
-    Z = impint(A,B),
-    Y = imp(C,D),
-    member([A,C,_], Frp), /* TODO: check assumption elims */
-    member([B,D,_], Frp),
-    write('impint checked'),
+    Z = andel1(A),
+    member([A, B, _], Frp),
+    B = and(D, _),
+    Y == D,
+    write('andel checked'),
     valid(Prems, Rest, Frp).
 
+% andel2(x)
 valid(Prems, [[X,Y,Z]|Rest], Frp):-
     number(X),
     prop(Y),
-    Z = pbc(A,B),
-    member([A, neg(Y), _], Frp),
-    member([B, cont, _], Frp),
-    write('pbc checked'),
+    Z = andel2(A),
+    member([A, B, _], Frp),
+    B = and(_, E),
+    Y == E,
+    write('andel checked'),
     valid(Prems, Rest, Frp).
 
+
+% orint1(x) TODO
+valid(Prems, [[X,Y,Z]|Rest], Frp):-
+    number(X),
+    prop(Y),
+    write('orint1(x)'),
+    valid(Prems, Rest, Frp).
+
+% orint2(x) TODO
+valid(Prems, [[X,Y,Z]|Rest], Frp):-
+    number(X),
+    prop(Y),
+    write('orint2(x)'),
+    valid(Prems, Rest, Frp).
+
+% orel(x,y,u,v,w)
 valid(Prems, [[X,Y,Z]|Rest], Frp):-
     number(X),
     prop(Y),
@@ -76,6 +99,41 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     write('orel checked'),
     valid(Prems, Rest, Frp).
 
+
+% impint(x,y)
+valid(Prems, [[X,Y,Z]|Rest], Frp):-
+    number(X),
+    prop(Y),
+    Z = impint(A,B),
+    Y = imp(C,D),
+    member([A,C,_], Frp), /* TODO: check assumption elims */
+    member([B,D,_], Frp),
+    write('impint checked'),
+    valid(Prems, Rest, Frp).
+
+% impel(x,y)
+valid(Prems, [[X,Y,Z]|Rest], Frp):-
+    number(X),
+    prop(Y),
+    Z = impel(A,B),
+    member([B, imp(F,Y), _], Frp),
+    member([A, F, _], Frp),
+    write('impel checked'),
+    valid(Prems, Rest, Frp).
+
+
+% negint(x,y)
+valid(Prems, [[X,Y,Z]|Rest], Frp):-
+    number(X),
+    prop(Y),
+    Y = neg(E),
+    Z = negint(A,B),
+    member([A, E, _], Frp),
+    member([B, cont, _], Frp),
+    write('negint checked'),
+    valid(Prems, Rest, Frp).
+
+% negel(x,y)
 valid(Prems, [[X,Y,Z]|Rest], Frp):-
     number(X),
     prop(Y),
@@ -87,37 +145,51 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     write('negel checked'),
     valid(Prems, Rest, Frp).
 
+
+% contel(x) TODO
 valid(Prems, [[X,Y,Z]|Rest], Frp):-
     number(X),
     prop(Y),
-    Y = neg(E),
-    Z = negint(A,B),
-    member([A, E, _], Frp),
+    write('contel(x)'),
+    valid(Prems, Rest, Frp).
+
+
+% negnegint(x) TODO
+valid(Prems, [[X,Y,Z]|Rest], Frp):-
+    number(X),
+    prop(Y),
+    write('negnegint(x)'),
+    valid(Prems, Rest, Frp).
+
+% negnegel(x) TODO
+valid(Prems, [[X,Y,Z]|Rest], Frp):-
+    number(X),
+    prop(Y),
+    write('negnegel(x)'),
+    valid(Prems, Rest, Frp).
+
+
+% mt(x,y) TODO
+valid(Prems, [[X,Y,Z]|Rest], Frp):-
+    number(X),
+    prop(Y),
+    write('mt(x,y)'),
+    valid(Prems, Rest, Frp).
+
+
+% pbc(x,y)
+valid(Prems, [[X,Y,Z]|Rest], Frp):-
+    number(X),
+    prop(Y),
+    Z = pbc(A,B),
+    member([A, neg(Y), _], Frp),
     member([B, cont, _], Frp),
-    write('negint checked'),
-    valid(Prems, Rest, Frp).
-
-valid(Prems, [[X,Y,Z]|Rest], Frp):-
-    number(X),
-    prop(Y),
-    Z = andel1(A),
-    member([A, B, _], Frp),
-    B = and(D, _),
-    Y == D,
-    write('andel checked'),
-    valid(Prems, Rest, Frp).
-
-valid(Prems, [[X,Y,Z]|Rest], Frp):-
-    number(X),
-    prop(Y),
-    Z = andel2(A),
-    member([A, B, _], Frp),
-    B = and(_, E),
-    Y == E,
-    write('andel checked'),
+    write('pbc checked'),
     valid(Prems, Rest, Frp).
 
 
+
+% box?? should be assumption?
 valid(Prems, [Box|Rest], Frp):-
     write('found a box'),
     reverse(Box, RevBox),
@@ -131,6 +203,7 @@ flatten([X|L1],L4) :- flatten(X,L2),
                       flatten(L1,L3),
                       append(L2,L3,L4).
 
+% Propositioner
 
 prop(X):-
     member(X,[a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z]).
@@ -151,4 +224,3 @@ prop(neg(X)):-
     prop(X).
 
 prop(cont).
-
