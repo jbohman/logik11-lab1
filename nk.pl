@@ -74,18 +74,18 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
 
 
 % orint1(x) TODO
-valid(Prems, [[X,Y,Z]|Rest], Frp):-
-    number(X),
-    prop(Y),
-    write('orint1(x)'),
-    valid(Prems, Rest, Frp).
+%valid(Prems, [[X,Y,Z]|Rest], Frp):-
+    %number(X),
+    %prop(Y),
+    %write('orint1(x)'),
+    %valid(Prems, Rest, Frp).
 
 % orint2(x) TODO
-valid(Prems, [[X,Y,Z]|Rest], Frp):-
-    number(X),
-    prop(Y),
-    write('orint2(x)'),
-    valid(Prems, Rest, Frp).
+%valid(Prems, [[X,Y,Z]|Rest], Frp):-
+    %number(X),
+    %prop(Y),
+    %write('orint2(x)'),
+    %valid(Prems, Rest, Frp).
 
 % orel(x,y,u,v,w)
 valid(Prems, [[X,Y,Z]|Rest], Frp):-
@@ -151,34 +151,40 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
 
 
 % contel(x) TODO
-valid(Prems, [[X,Y,Z]|Rest], Frp):-
-    number(X),
-    prop(Y),
-    write('contel(x)'),
-    valid(Prems, Rest, Frp).
+%valid(Prems, [[X,Y,Z]|Rest], Frp):-
+    %number(X),
+    %prop(Y),
+    %write('contel(x)'),
+    %valid(Prems, Rest, Frp).
 
 
-% negnegint(x) TODO
+% negnegint(x)
 valid(Prems, [[X,Y,Z]|Rest], Frp):-
     number(X),
-    prop(Y),
+    prop(Y), % Y == neg(neg(_)) ?
+    Z = negnegint(A),
+    member([A, B, _], Frp),
+    prop(B),
     write('negnegint(x)'),
     valid(Prems, Rest, Frp).
 
-% negnegel(x) TODO
+% negnegel(x)
 valid(Prems, [[X,Y,Z]|Rest], Frp):-
     number(X),
     prop(Y),
+    Z = negnegel(A),
+    member([A, B, _], Frp),
+    prop(B), % B == neg(neg(Y)) ?
     write('negnegel(x)'),
     valid(Prems, Rest, Frp).
 
 
 % mt(x,y) TODO
-valid(Prems, [[X,Y,Z]|Rest], Frp):-
-    number(X),
-    prop(Y),
-    write('mt(x,y)'),
-    valid(Prems, Rest, Frp).
+%valid(Prems, [[X,Y,Z]|Rest], Frp):-
+    %number(X),
+    %prop(Y),
+    %write('mt(x,y)'),
+    %valid(Prems, Rest, Frp).
 
 
 % pbc(x,y)
