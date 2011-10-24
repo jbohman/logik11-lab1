@@ -17,7 +17,7 @@ valid(_,[],_).
 
 % assumption
 valid(Prems, [[_,_,assumption]|[]], Frp):-
-    write('assumption checked').
+    write('assumption').
 
 
 % premise
@@ -25,7 +25,7 @@ valid(Prems, [[X,Y,premise]|Rest], Frp):-
     number(X),
     prop(Y),
     member(Y, Prems),
-    write('premise checked'),
+    write('premise'),
     valid(Prems, Rest, Frp).
 
 
@@ -35,14 +35,18 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     prop(Y),
     Z = copy(A),
     member([A,Y,_], Frp),
-    write('copy checked'),
+    write('copy(x)'),
     valid(Prems, Rest, Frp).
 
 
-% andint(x,y) TODO
+% andint(x,y)
 valid(Prems, [[X,Y,Z]|Rest], Frp):-
     number(X),
     prop(Y),
+    Z = andint(A,B),
+    member([A, C, _], Frp),
+    member([B, D, _], Frp),
+    Y == and(C,D),
     write('andint(x,y)'),
     valid(Prems, Rest, Frp).
 
@@ -54,7 +58,7 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     member([A, B, _], Frp),
     B = and(D, _),
     Y == D,
-    write('andel checked'),
+    write('andel1(x)'),
     valid(Prems, Rest, Frp).
 
 % andel2(x)
@@ -65,7 +69,7 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     member([A, B, _], Frp),
     B = and(_, E),
     Y == E,
-    write('andel checked'),
+    write('andel2(x)'),
     valid(Prems, Rest, Frp).
 
 
