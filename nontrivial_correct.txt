@@ -1,21 +1,14 @@
-[imp(q,r)].
-
-imp(or(p,q),or(p,r)).
-
+[or(p,q)].
+or(q,p).
 [
-	[1, imp(q,r), premise],
-	[
-		[2, or(p,q), assumption],
-		[
-			[3, p, assumption],
-			[4, or(p,r), orint1(3)]
-		],
-		[
-			[5, q, assumption],
-			[6, r, impel(1,5)],
-			[7, or(p,r), orint2(6)]
-		],
-		[8, or(p,r), orel(2,3,4,5,7)]
-	],
-	[9, imp(or(p,q),or(p,r)), impint(2,8)]
-]
+    [1, or(p,q), premise],
+    [
+        [2, p, assumption],
+        [3, or(q,p), orint2(2)]
+    ],
+    [
+        [4, q, assumption],
+        [5, or(q,p), orint1(4)]
+    ],
+    [6, or(q,p), orel(1,2,3,4,5)]
+].
