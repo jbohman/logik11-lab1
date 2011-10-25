@@ -9,7 +9,7 @@ valid_fwd(Prems, Goal, Proof):-
     valid_rev(Prems, Goal, RevProof).
 
 valid_rev(Prems, Goal, RevProof):-
-    RevProof = [[_, Goal, X]|Rp], /* Goal at end of Proof */
+    RevProof = [[_, Goal, X]|_], /* Goal at end of Proof */
     X \= assumption,
     X \= copy(_),
     flatten(RevProof, Frp),
@@ -18,7 +18,7 @@ valid_rev(Prems, Goal, RevProof):-
 valid(_,[],_).
 
 % assumption
-valid(Prems, [[_,_,assumption]|[]], Frp).
+valid(_, [[_,_,assumption]|[]], _).
 
 % premise
 valid(Prems, [[X,Y,premise]|Rest], Frp):-
@@ -26,9 +26,6 @@ valid(Prems, [[X,Y,premise]|Rest], Frp):-
     prop(Y),
     member(Y, Prems),
     %write('premise\n'),
-    %write('BLAFSDSDFSD '),
-    %write(Rest),
-    %write('\n'),
     valid(Prems, Rest, Frp).
 
 
@@ -193,9 +190,6 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     member([A, B, _], Frp),
     prop(B), % B == neg(neg(Y)) ?
     %write('negnegel(x)\n'),
-    %write('RestBLA '),
-    %write(Rest),
-    %write('\n'),
     valid(Prems, Rest, Frp).
 
 
@@ -229,22 +223,12 @@ valid(Prems, [[X,Y,lem]|Rest], Frp):-
 
 % box?? should be assumption?
 valid(Prems, [Box|Rest], Frp):-
-    list(Box),
     is_box(Box),
-    %write('found a box\n'),
-    %write('Box '),
-    %write(Box),
-    %write('\n'),
-    %write('Rest '),
-    %write(Rest),
-    %write('\n\n'),
-    %member([_, _, premise], Box),
     reverse(Box, RevBox),
     valid(Prems, RevBox, Frp),
     valid(Prems, Rest, Frp).
 
-is_box([[A, _, assumption]|Rest]):-
-    list(Rest),
+is_box([[A, _, assumption]|_]):-
     number(A).
 
 
