@@ -5,27 +5,30 @@ verify(InputFileName) :-
     valid_fwd(Prems, Goal, Proof).
 
 valid_fwd(Prems, Goal, Proof):-
-    reverse(Proof, RevProof), valid_rev(Prems, Goal, RevProof).
+    reverse(Proof, RevProof),
+    valid_rev(Prems, Goal, RevProof).
 
 valid_rev(Prems, Goal, RevProof):-
     RevProof = [[_, Goal, X]|Rp], /* Goal at end of Proof */
-    X \== assumption,
+    X \= assumption,
+    X \= copy(_),
     flatten(RevProof, Frp),
     valid(Prems, RevProof, Frp).
 
 valid(_,[],_).
 
 % assumption
-valid(Prems, [[_,_,assumption]|[]], Frp):-
-    write('assumption').
-
+valid(Prems, [[_,_,assumption]|[]], Frp).
 
 % premise
 valid(Prems, [[X,Y,premise]|Rest], Frp):-
     number(X),
     prop(Y),
     member(Y, Prems),
-    write('premise'),
+    %write('premise\n'),
+    %write('BLAFSDSDFSD '),
+    %write(Rest),
+    %write('\n'),
     valid(Prems, Rest, Frp).
 
 
@@ -35,7 +38,7 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     prop(Y),
     Z = copy(A),
     member([A,Y,_], Frp),
-    write('copy(x)'),
+    %write('copy(x)\n'),
     valid(Prems, Rest, Frp).
 
 
@@ -47,7 +50,7 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     member([A, C, _], Frp),
     member([B, D, _], Frp),
     Y == and(C,D),
-    write('andint(x,y)'),
+    %write('andint(x,y)\n'),
     valid(Prems, Rest, Frp).
 
 % andel1(x)
@@ -58,7 +61,7 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     member([A, B, _], Frp),
     B = and(D, _),
     Y == D,
-    write('andel1(x)'),
+    %write('andel1(x)\n'),
     valid(Prems, Rest, Frp).
 
 % andel2(x)
@@ -69,7 +72,7 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     member([A, B, _], Frp),
     B = and(_, E),
     Y == E,
-    write('andel2(x)'),
+    %write('andel2(x)\n'),
     valid(Prems, Rest, Frp).
 
 
@@ -82,7 +85,7 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     member([A, B, _], Frp), % do B exist
     prop(B), % is B a prop
     prop(C), % is C a prop
-    write('orint1(x)'),
+    %write('orint1(x)\n'),
     valid(Prems, Rest, Frp).
 
 % orint2(x)
@@ -94,7 +97,7 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     member([A, C, _], Frp), % do C exist
     prop(B), % is B a prop
     prop(C), % is C a prop
-    write('orint2(x)'),
+    %write('orint2(x)\n'),
     valid(Prems, Rest, Frp).
 
 % orel(x,y,u,v,w)
@@ -104,13 +107,13 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     Z = orel(A,B,C,D,E),
     member([A, F, _], Frp),
     F = or(G,H),
-    member([B, G, _], Frp),
+    member([B, G, assumption], Frp),
     member([C, I, _], Frp),
-    member([D, H, _], Frp),
+    member([D, H, assumption], Frp),
     member([E, J, _], Frp),
     I == J,
     J == Y,
-    write('orel checked'),
+    %write('orel(x,y,u,v,w)\n'),
     valid(Prems, Rest, Frp).
 
 
@@ -118,11 +121,12 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
 valid(Prems, [[X,Y,Z]|Rest], Frp):-
     number(X),
     prop(Y),
+    B is (X-1),
     Z = impint(A,B),
     Y = imp(C,D),
-    member([A,C,_], Frp), /* TODO: check assumption elims */
+    member([A,C,assumption], Frp),
     member([B,D,_], Frp),
-    write('impint checked'),
+    %write('impint(x,y)\n'),
     valid(Prems, Rest, Frp).
 
 % impel(x,y)
@@ -132,7 +136,7 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     Z = impel(A,B),
     member([B, imp(F,Y), _], Frp),
     member([A, F, _], Frp),
-    write('impel checked'),
+    %write('impel(x,y)\n'),
     valid(Prems, Rest, Frp).
 
 
@@ -142,9 +146,9 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     prop(Y),
     Y = neg(E),
     Z = negint(A,B),
-    member([A, E, _], Frp),
+    member([A, E, assumption], Frp),
     member([B, cont, _], Frp),
-    write('negint checked'),
+    %write('negint(x,y)\n'),
     valid(Prems, Rest, Frp).
 
 % negel(x,y)
@@ -156,26 +160,29 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     member([A, C, _], Frp),
     member([B, D, _], Frp),
     D == neg(C),
-    write('negel checked'),
+    %write('negel(x,y)\n'),
     valid(Prems, Rest, Frp).
 
 
 % contel(x) TODO
-%valid(Prems, [[X,Y,Z]|Rest], Frp):-
-    %number(X),
-    %prop(Y),
+valid(Prems, [[X,Y,Z]|Rest], Frp):-
+    number(X),
+    prop(Y),
+    Z = contel(A),
+    member([A, cont, _], Frp),
     %write('contel(x)'),
-    %valid(Prems, Rest, Frp).
+    valid(Prems, Rest, Frp).
 
 
 % negnegint(x)
 valid(Prems, [[X,Y,Z]|Rest], Frp):-
     number(X),
-    prop(Y), % Y == neg(neg(_)) ?
+    prop(Y),
     Z = negnegint(A),
     member([A, B, _], Frp),
     prop(B),
-    write('negnegint(x)'),
+    Y == neg(neg(B)),
+    %write('negnegint(x)\n'),
     valid(Prems, Rest, Frp).
 
 % negnegel(x)
@@ -185,16 +192,22 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     Z = negnegel(A),
     member([A, B, _], Frp),
     prop(B), % B == neg(neg(Y)) ?
-    write('negnegel(x)'),
+    %write('negnegel(x)\n'),
+    %write('RestBLA '),
+    %write(Rest),
+    %write('\n'),
     valid(Prems, Rest, Frp).
 
 
 % mt(x,y) TODO
-%valid(Prems, [[X,Y,Z]|Rest], Frp):-
-    %number(X),
-    %prop(Y),
+valid(Prems, [[X,neg(Y),Z]|Rest], Frp):-
+    number(X),
+    prop(Y),
+    Z = mt(A,B),
+    member([A, imp(Y,D), _], Frp),
+    member([B, neg(D), _], Frp),
     %write('mt(x,y)'),
-    %valid(Prems, Rest, Frp).
+    valid(Prems, Rest, Frp).
 
 
 % pbc(x,y)
@@ -202,19 +215,38 @@ valid(Prems, [[X,Y,Z]|Rest], Frp):-
     number(X),
     prop(Y),
     Z = pbc(A,B),
-    member([A, neg(Y), _], Frp),
+    member([A, neg(Y), assumption], Frp),
     member([B, cont, _], Frp),
-    write('pbc checked'),
+    %write('pbc(x,y)\n'),
     valid(Prems, Rest, Frp).
 
-
+% lem
+valid(Prems, [[X,Y,lem]|Rest], Frp):-
+    number(X),
+    prop(Y),
+    Y = or(A,neg(A)),
+    valid(Prems, Rest, Frp).
 
 % box?? should be assumption?
 valid(Prems, [Box|Rest], Frp):-
-    write('found a box'),
+    list(Box),
+    is_box(Box),
+    %write('found a box\n'),
+    %write('Box '),
+    %write(Box),
+    %write('\n'),
+    %write('Rest '),
+    %write(Rest),
+    %write('\n\n'),
+    %member([_, _, premise], Box),
     reverse(Box, RevBox),
     valid(Prems, RevBox, Frp),
     valid(Prems, Rest, Frp).
+
+is_box([[A, _, assumption]|Rest]):-
+    list(Rest),
+    number(A).
+
 
 flatten([],[]).
 flatten([[]|L],L).

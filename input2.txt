@@ -1,4 +1,4 @@
-[neg(neg(and(imp(p, neg(p)))))].
+[neg(neg(imp(p, neg(p))))].
 
 neg(p).
 
